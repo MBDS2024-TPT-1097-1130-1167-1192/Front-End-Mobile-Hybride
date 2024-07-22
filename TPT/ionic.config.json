@@ -1,0 +1,7 @@
+{
+  "name": "TPT",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
