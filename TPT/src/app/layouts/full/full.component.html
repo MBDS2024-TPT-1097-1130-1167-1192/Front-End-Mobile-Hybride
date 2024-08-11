@@ -1,0 +1,56 @@
+<ion-split-pane contentId="main-content">
+  <ion-menu contentId="main-content" type="overlay">
+    <ion-content>
+      <ion-list id="inbox-list">
+        <div class="logo-container">
+          <img
+            *ngIf="!darkMode"
+            src="assets/images/logos/logo-light.png"
+            alt="Light Mode Logo"
+          />
+          <img
+            *ngIf="darkMode"
+            src="assets/images/logos/logo-dark.png"
+            alt="Dark Mode Logo"
+          />
+        </div>
+        <ion-menu-toggle
+          auto-hide="false"
+          *ngFor="let p of appPages; let i = index"
+        >
+          <ion-item
+            routerDirection="root"
+            [routerLink]="[p.url]"
+            lines="none"
+            detail="false"
+            routerLinkActive="selected"
+          >
+            <ion-icon
+              aria-hidden="true"
+              slot="start"
+              [ios]="p.icon + '-outline'"
+              [md]="p.icon + '-sharp'"
+            ></ion-icon>
+            <ion-label>{{ p.title }}</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+
+      <ion-item lines="none">
+        <ion-icon
+          aria-hidden="true"
+          slot="start"
+          ios="moon-outline"
+          md="moon-sharp"
+        ></ion-icon>
+        <ion-label>Dark Mode</ion-label>
+        <ion-toggle
+          slot="end"
+          [checked]="darkMode"
+          (ionChange)="toggleDarkMode($event)"
+        ></ion-toggle>
+      </ion-item>
+    </ion-content>
+  </ion-menu>
+  <ion-router-outlet id="main-content"></ion-router-outlet>
+</ion-split-pane>
