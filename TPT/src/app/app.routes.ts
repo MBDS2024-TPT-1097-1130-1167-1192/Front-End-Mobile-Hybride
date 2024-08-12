@@ -22,16 +22,20 @@ export const routes: Routes = [
     ],
   },
   {
-    path: '',
+    path: 'authentication',
     component: BlankComponent,
     children: [
       {
-        path: 'authentication',
+        path: '',
         loadChildren: () =>
           import('./pages/authentication/authentication.module').then(
             (m) => m.AuthenticationModule
           ),
       },
     ],
+  },
+  {
+    path: '**',
+    redirectTo: '',
   },
 ];

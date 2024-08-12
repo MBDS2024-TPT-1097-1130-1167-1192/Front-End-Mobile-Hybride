@@ -62,7 +62,7 @@ export class LoginComponent implements OnInit {
             LocalStorageConst.USER_ACCESS_TOKEN,
             res.data.user_access_token
           );
-          this.router.navigate(['/']);
+          this.router.navigate(['/folder/inbox']);
           console.log('Vous êtes maintenant connecté.');
         },
         error: () => {
