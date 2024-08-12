@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { FullComponent } from './layouts/full/full.component';
 import { BlankComponent } from './layouts/blank/blank.component';
 import { UserAuthGuard } from './guards/user-auth.guard';
+import { DataRoutingConst } from './constants/data-routing.const';
 
 export const routes: Routes = [
   {

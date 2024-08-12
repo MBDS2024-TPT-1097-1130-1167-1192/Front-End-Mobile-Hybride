@@ -1,34 +1,31 @@
 import { Injectable } from '@angular/core';
-import { SnackBarComponent } from 'src/app/components/snack-bar/snack-bar.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SnackBarService {
-  constructor(private _snackBar: MatSnackBar) {}
+  constructor(private toastController: ToastController) {}
 
-  openErrorSnackBar(errorMessage: String) {
-    this._snackBar.openFromComponent(SnackBarComponent, {
-      data: {
-        message: 'Erreur : ' + errorMessage,
-      },
+  async openErrorSnackBar(errorMessage: String) {
+    const toast = await this.toastController.create({
+      message: errorMessage.toString(),
       duration: 3000,
-      verticalPosition: 'bottom',
-      horizontalPosition: 'center',
-      panelClass: 'error',
+      position: 'bottom',
+      color: 'danger',
     });
+
+    await toast.present();
   }
 
-  openSuccesSnackBar(successMessage: String) {
-    this._snackBar.openFromComponent(SnackBarComponent, {
-      data: {
-        message: 'Succes : ' + successMessage,
-      },
+  async openSuccesSnackBar(successMessage: String) {
+    const toast = await this.toastController.create({
+      message: successMessage.toString(),
       duration: 3000,
-      verticalPosition: 'bottom',
-      horizontalPosition: 'center',
-      panelClass: 'success',
+      position: 'bottom',
+      color: 'success',
     });
+
+    await toast.present();
   }
 }

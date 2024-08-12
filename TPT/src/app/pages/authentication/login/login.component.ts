@@ -7,7 +7,7 @@ import { LocalStorageService } from 'src/app/services/basic/local-storage/local-
 import { LocalStorageConst } from 'src/app/constants/local-storage.const';
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/services/basic/storage/storage.service';
-
+import { SnackBarService } from 'src/app/services/basic/snack-bar/snack-bar.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -23,7 +23,8 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private localStorageService: LocalStorageService,
     private storageService: StorageService,
-    private router: Router
+    private router: Router,
+    private snackBarService: SnackBarService
   ) {
     addIcons({
       eye,
@@ -63,10 +64,14 @@ export class LoginComponent implements OnInit {
             res.data.user_access_token
           );
           this.router.navigate(['/folder/inbox']);
-          console.log('Vous êtes maintenant connecté.');
+          this.snackBarService.openSuccesSnackBar(
+            'Vous êtes maintenant connecté.'
+          );
         },
         error: () => {
-          console.log('Votre email ou votre mot de passe est incorrect.');
+          this.snackBarService.openErrorSnackBar(
+            'Votre email ou votre mot de passe est incorrect.'
+          );
         },
         complete: () => {},
       });
@@ -91,15 +96,18 @@ export class LoginComponent implements OnInit {
           const fieldLabel = this.getFieldLabel(key);
           switch (errorKey) {
             case 'required':
-              console.log(`Le champ ${fieldLabel} est requis.`);
+              this.snackBarService.openErrorSnackBar(
+                `Le champ ${fieldLabel} est requis.`
+              );
               break;
             case 'email':
-              console.log(`Le champ ${fieldLabel} doit être un email valide.`);
+              this.snackBarService.openErrorSnackBar(
+                `Le champ ${fieldLabel} doit être un email valide.`
+              );
               break;
             default:
-              console.log(
-                `Erreur inconnue dans le champ ${fieldLabel}:`,
-                controlErrors
+              this.snackBarService.openErrorSnackBar(
+                `Erreur inconnue dans le champ ${fieldLabel}:` + controlErrors
               );
           }
         });
