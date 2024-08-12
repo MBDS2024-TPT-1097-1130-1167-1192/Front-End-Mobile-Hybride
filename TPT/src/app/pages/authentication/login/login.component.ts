@@ -6,6 +6,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { LocalStorageService } from 'src/app/services/basic/local-storage/local-storage.service';
 import { LocalStorageConst } from 'src/app/constants/local-storage.const';
 import { Router } from '@angular/router';
+import { StorageService } from 'src/app/services/basic/storage/storage.service';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private localStorageService: LocalStorageService,
+    private storageService: StorageService,
     private router: Router
   ) {
     addIcons({
@@ -55,8 +57,8 @@ export class LoginComponent implements OnInit {
       };
 
       this.authService.login(userData).subscribe({
-        next: (res) => {
-          this.localStorageService.setItem(
+        next: async (res) => {
+          await this.storageService.set(
             LocalStorageConst.USER_ACCESS_TOKEN,
             res.data.user_access_token
           );

@@ -6,6 +6,8 @@ import {
   IonRouterOutlet,
   IonRouterLink,
 } from '@ionic/angular/standalone';
+import { StorageService } from './services/basic/storage/storage.service';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
@@ -21,4 +23,16 @@ import {
     IonRouterOutlet,
   ],
 })
-export class AppComponent {}
+export class AppComponent {
+  constructor(
+    private platform: Platform,
+    private storageService: StorageService
+  ) {
+    this.initializeApp();
+  }
+
+  async initializeApp() {
+    await this.platform.ready();
+    await this.storageService.init();
+  }
+}

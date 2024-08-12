@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { FullComponent } from './layouts/full/full.component';
 import { BlankComponent } from './layouts/blank/blank.component';
+import { UserAuthGuard } from './guards/user-auth.guard';
 
 export const routes: Routes = [
   {
@@ -14,6 +15,7 @@ export const routes: Routes = [
       },
       {
         path: 'folder/:id',
+        canActivate: [UserAuthGuard],
         loadComponent: () =>
           import('./folder/folder.page').then((m) => m.FolderPage),
       },
