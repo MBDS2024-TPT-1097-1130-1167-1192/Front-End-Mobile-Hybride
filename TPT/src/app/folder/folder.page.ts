@@ -27,18 +27,10 @@ import { LocalStorageConst } from '../constants/local-storage.const';
 })
 export class FolderPage implements OnInit {
   public folder!: string;
-  data: string = 'No';
   private activatedRoute = inject(ActivatedRoute);
   constructor(private storageService: StorageService) {}
 
   ngOnInit() {
     this.folder = this.activatedRoute.snapshot.paramMap.get('id') as string;
-    this.getData();
-  }
-
-  async getData() {
-    this.data = await this.storageService.get(
-      LocalStorageConst.USER_ACCESS_TOKEN
-    );
   }
 }

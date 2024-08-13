@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
 import { LocalStorageService } from 'src/app/services/basic/local-storage/local-storage.service';
 import { LocalStorageConst } from 'src/app/constants/local-storage.const';
+import { Network } from '@capacitor/network';
+import { switchMap } from 'rxjs/operators';
+import { SnackBarService } from '../snack-bar/snack-bar.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +14,8 @@ export class HttpRequestService {
   private authorizationToken: string = '-';
   constructor(
     private http: HttpClient,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private snackBarService: SnackBarService
   ) {
     this.setAuthorizationTokenValue(null);
   }
@@ -56,10 +60,21 @@ export class HttpRequestService {
     body: any,
     options: any = {}
   ): Observable<any> {
-    return this.http.post<T>(
-      url,
-      body,
-      this.getOptions(authorization, options)
+    return from(Network.getStatus()).pipe(
+      switchMap((status) => {
+        if (!status.connected) {
+          this.snackBarService.openErrorSnackBar(
+            'Aucune connexion Internet. Veuillez vérifier votre connexion et réessayer.'
+          );
+          return of(null);
+        } else {
+          return this.http.post<T>(
+            url,
+            body,
+            this.getOptions(authorization, options)
+          );
+        }
+      })
     );
   }
 
@@ -68,7 +83,18 @@ export class HttpRequestService {
     url: string,
     options: any = {}
   ): Observable<any> {
-    return this.http.get<T>(url, this.getOptions(authorization, options));
+    return from(Network.getStatus()).pipe(
+      switchMap((status) => {
+        if (!status.connected) {
+          this.snackBarService.openErrorSnackBar(
+            'Aucune connexion Internet. Veuillez vérifier votre connexion et réessayer.'
+          );
+          return of(null);
+        } else {
+          return this.http.get<T>(url, this.getOptions(authorization, options));
+        }
+      })
+    );
   }
 
   public put<T>(
@@ -77,7 +103,22 @@ export class HttpRequestService {
     body: any,
     options: any = {}
   ): Observable<any> {
-    return this.http.put<T>(url, body, this.getOptions(authorization, options));
+    return from(Network.getStatus()).pipe(
+      switchMap((status) => {
+        if (!status.connected) {
+          this.snackBarService.openErrorSnackBar(
+            'Aucune connexion Internet. Veuillez vérifier votre connexion et réessayer.'
+          );
+          return of(null);
+        } else {
+          return this.http.put<T>(
+            url,
+            body,
+            this.getOptions(authorization, options)
+          );
+        }
+      })
+    );
   }
 
   public delete<T>(
@@ -85,7 +126,21 @@ export class HttpRequestService {
     url: string,
     options: any = {}
   ): Observable<any> {
-    return this.http.delete<T>(url, this.getOptions(authorization, options));
+    return from(Network.getStatus()).pipe(
+      switchMap((status) => {
+        if (!status.connected) {
+          this.snackBarService.openErrorSnackBar(
+            'Aucune connexion Internet. Veuillez vérifier votre connexion et réessayer.'
+          );
+          return of(null);
+        } else {
+          return this.http.delete<T>(
+            url,
+            this.getOptions(authorization, options)
+          );
+        }
+      })
+    );
   }
 
   public patch<T>(
@@ -94,10 +149,21 @@ export class HttpRequestService {
     body: any,
     options: any = {}
   ): Observable<any> {
-    return this.http.patch<T>(
-      url,
-      body,
-      this.getOptions(authorization, options)
+    return from(Network.getStatus()).pipe(
+      switchMap((status) => {
+        if (!status.connected) {
+          this.snackBarService.openErrorSnackBar(
+            'Aucune connexion Internet. Veuillez vérifier votre connexion et réessayer.'
+          );
+          return of(null);
+        } else {
+          return this.http.patch<T>(
+            url,
+            body,
+            this.getOptions(authorization, options)
+          );
+        }
+      })
     );
   }
 
@@ -106,7 +172,21 @@ export class HttpRequestService {
     url: string,
     options: any = {}
   ): Observable<any> {
-    return this.http.head<T>(url, this.getOptions(authorization, options));
+    return from(Network.getStatus()).pipe(
+      switchMap((status) => {
+        if (!status.connected) {
+          this.snackBarService.openErrorSnackBar(
+            'Aucune connexion Internet. Veuillez vérifier votre connexion et réessayer.'
+          );
+          return of(null);
+        } else {
+          return this.http.head<T>(
+            url,
+            this.getOptions(authorization, options)
+          );
+        }
+      })
+    );
   }
 
   public options<T>(
@@ -114,6 +194,20 @@ export class HttpRequestService {
     url: string,
     options: any = {}
   ): Observable<any> {
-    return this.http.options<T>(url, this.getOptions(authorization, options));
+    return from(Network.getStatus()).pipe(
+      switchMap((status) => {
+        if (!status.connected) {
+          this.snackBarService.openErrorSnackBar(
+            'Aucune connexion Internet. Veuillez vérifier votre connexion et réessayer.'
+          );
+          return of(null);
+        } else {
+          return this.http.options<T>(
+            url,
+            this.getOptions(authorization, options)
+          );
+        }
+      })
+    );
   }
 }
