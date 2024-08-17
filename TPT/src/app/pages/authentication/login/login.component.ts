@@ -64,7 +64,9 @@ export class LoginComponent implements OnInit {
             LocalStorageConst.USER_ACCESS_TOKEN,
             res.data.user_access_token
           );
-          this.router.navigate([DataRoutingConst.ROUTE_MES_ECHANGES]);
+          this.router.navigate([DataRoutingConst.ROUTE_MES_ECHANGES], {
+            replaceUrl: true,
+          });
           this.snackBarService.openSuccesSnackBar(
             'Vous êtes maintenant connecté.'
           );
