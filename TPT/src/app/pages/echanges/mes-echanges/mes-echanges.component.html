@@ -1,3 +1,58 @@
-<p>
-  mes-echanges works!
-</p>
+<ion-content>
+  <h1 style="margin-left: 20px">
+    Mes échanges en cours ({{ exchanges.length }})
+  </h1>
+  <ion-list>
+    <ion-card *ngFor="let exchange of exchanges" class="ion-card">
+      <ion-card-header>
+        <ion-item lines="none">
+          <ion-thumbnail slot="start">
+            <img [src]="exchange.otherPerson.imageUrl" alt="Owner's Image" />
+          </ion-thumbnail>
+          <ion-label>
+            <h2>Échange avec {{ exchange.otherPerson.name }}</h2>
+            <p>Date d'acceptation : {{ exchange.acceptanceDate }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="items-section">
+          <div class="items-title">
+            Mes objets ({{ exchange.myItems.length }}) :
+          </div>
+          <div class="scrollable-container">
+            <div *ngFor="let item of exchange.myItems" class="item-container">
+              <ion-thumbnail class="item-thumbnail">
+                <img [src]="item.imageUrl" alt="{{ item.name }}" />
+              </ion-thumbnail>
+              <span>{{ item.name }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="items-section">
+          <div class="items-title">
+            Objets de {{ exchange.otherPerson.name }} ({{
+              exchange.otherPersonItems.length
+            }}) :
+          </div>
+          <div class="scrollable-container">
+            <div
+              *ngFor="let item of exchange.otherPersonItems"
+              class="item-container"
+            >
+              <ion-thumbnail class="item-thumbnail">
+                <img [src]="item.imageUrl" alt="{{ item.name }}" />
+              </ion-thumbnail>
+              <span>{{ item.name }}</span>
+            </div>
+          </div>
+        </div>
+        <ion-button expand="full" (click)="performAction(exchange)">
+          Gérer l'échange
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>
