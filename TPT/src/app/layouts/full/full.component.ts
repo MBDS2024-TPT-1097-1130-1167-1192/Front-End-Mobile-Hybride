@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  AfterViewInit,
+  ElementRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {
@@ -16,25 +22,19 @@ import {
   IonRouterOutlet,
   IonRouterLink,
   IonToggle,
+  IonHeader,
+  IonMenuButton,
+  IonButtons,
+  IonToolbar,
+  IonTitle,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
-  mailOutline,
-  mailSharp,
-  paperPlaneOutline,
-  paperPlaneSharp,
-  heartOutline,
-  heartSharp,
-  archiveOutline,
-  archiveSharp,
-  trashOutline,
-  trashSharp,
-  warningOutline,
-  warningSharp,
-  bookmarkOutline,
-  bookmarkSharp,
+  swapHorizontalOutline,
+  swapHorizontalSharp,
   moonSharp,
 } from 'ionicons/icons';
+import { DataRoutingConst } from 'src/app/constants/data-routing.const';
 
 @Component({
   selector: 'app-full',
@@ -59,36 +59,29 @@ import {
     IonRouterLink,
     IonRouterOutlet,
     IonToggle,
+    IonHeader,
+    IonMenuButton,
+    IonButtons,
+    IonToolbar,
+    IonTitle,
   ],
 })
-export class FullComponent implements OnInit {
+export class FullComponent implements OnInit, AfterViewInit {
   public appPages = [
-    { title: 'Inbox', url: '/folder/inbox', icon: 'mail' },
-    { title: 'Outbox', url: '/folder/outbox', icon: 'paper-plane' },
-    { title: 'Favorites', url: '/folder/favorites', icon: 'heart' },
-    { title: 'Archived', url: '/folder/archived', icon: 'archive' },
-    { title: 'Trash', url: '/folder/trash', icon: 'trash' },
-    { title: 'Spam', url: '/folder/spam', icon: 'warning' },
+    {
+      title: 'Mes échanges en cours',
+      url: DataRoutingConst.ROUTE_MES_ECHANGES,
+      icon: 'swap-horizontal',
+    },
   ];
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
+  @ViewChild(IonHeader, { read: ElementRef }) header: ElementRef | undefined;
+  public headerHeight = 0;
   public darkMode = false;
 
   constructor() {
     addIcons({
-      mailOutline,
-      mailSharp,
-      paperPlaneOutline,
-      paperPlaneSharp,
-      heartOutline,
-      heartSharp,
-      archiveOutline,
-      archiveSharp,
-      trashOutline,
-      trashSharp,
-      warningOutline,
-      warningSharp,
-      bookmarkOutline,
-      bookmarkSharp,
+      swapHorizontalOutline,
+      swapHorizontalSharp,
       moonSharp,
     });
   }
@@ -96,6 +89,12 @@ export class FullComponent implements OnInit {
   ngOnInit() {
     this.darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
     document.body.classList.toggle('dark', this.darkMode);
+  }
+
+  ngAfterViewInit() {
+    if (this.header) {
+      this.headerHeight = this.header.nativeElement.offsetHeight;
+    }
   }
 
   toggleDarkMode(event: any) {

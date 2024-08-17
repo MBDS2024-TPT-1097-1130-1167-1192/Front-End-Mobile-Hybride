@@ -52,5 +52,16 @@
       </ion-item>
     </ion-content>
   </ion-menu>
-  <ion-router-outlet id="main-content"></ion-router-outlet>
+  <ion-content id="main-content" [fullscreen]="true">
+    <ion-header slot="fixed" [translucent]="true">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Trocodeal</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-router-outlet></ion-router-outlet>
+  </ion-content>
 </ion-split-pane>

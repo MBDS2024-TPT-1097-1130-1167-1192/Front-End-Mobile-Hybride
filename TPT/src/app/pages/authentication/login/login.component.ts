@@ -8,6 +8,7 @@ import { LocalStorageConst } from 'src/app/constants/local-storage.const';
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/services/basic/storage/storage.service';
 import { SnackBarService } from 'src/app/services/basic/snack-bar/snack-bar.service';
+import { DataRoutingConst } from 'src/app/constants/data-routing.const';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -63,7 +64,7 @@ export class LoginComponent implements OnInit {
             LocalStorageConst.USER_ACCESS_TOKEN,
             res.data.user_access_token
           );
-          this.router.navigate(['/folder/inbox']);
+          this.router.navigate([DataRoutingConst.ROUTE_MES_ECHANGES]);
           this.snackBarService.openSuccesSnackBar(
             'Vous êtes maintenant connecté.'
           );

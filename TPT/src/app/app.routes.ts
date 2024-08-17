@@ -11,14 +11,16 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'folder/inbox',
+        redirectTo: 'mes-echanges',
         pathMatch: 'full',
       },
       {
-        path: 'folder/:id',
+        path: 'mes-echanges',
         canActivate: [UserAuthGuard],
         loadComponent: () =>
-          import('./folder/folder.page').then((m) => m.FolderPage),
+          import('./pages/echanges/mes-echanges/mes-echanges.component').then(
+            (m) => m.MesEchangesComponent
+          ),
       },
     ],
   },
