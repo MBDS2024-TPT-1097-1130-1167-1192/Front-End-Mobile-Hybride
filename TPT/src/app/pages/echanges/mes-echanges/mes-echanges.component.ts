@@ -10,6 +10,8 @@ import {
   IonCard,
   IonCardHeader,
   IonCardContent,
+  IonRefresher,
+  IonRefresherContent,
 } from '@ionic/angular/standalone';
 import { EchangesService } from 'src/app/services/echanges.service';
 import { ActionSheetController } from '@ionic/angular';
@@ -32,6 +34,8 @@ import { ModalController } from '@ionic/angular';
     IonCard,
     IonCardHeader,
     IonCardContent,
+    IonRefresher,
+    IonRefresherContent,
   ],
 })
 export class MesEchangesComponent implements OnInit {
@@ -59,6 +63,13 @@ export class MesEchangesComponent implements OnInit {
         );
       }
     );
+  }
+
+  refresh(event: any) {
+    setTimeout(() => {
+      this.loadEchangesEnCours();
+      event.target.complete();
+    }, 1000);
   }
 
   async showActionSheet(exchange: any) {
