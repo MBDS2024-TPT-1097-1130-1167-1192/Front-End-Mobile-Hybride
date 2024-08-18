@@ -11,7 +11,7 @@ import {
   IonCardHeader,
   IonCardContent,
 } from '@ionic/angular/standalone';
-
+import { EchangesService } from 'src/app/services/echanges.service';
 @Component({
   selector: 'app-mes-echanges',
   templateUrl: './mes-echanges.component.html',
@@ -33,54 +33,26 @@ import {
 export class MesEchangesComponent implements OnInit {
   public exchanges: any[] = [];
 
-  constructor() {}
+  constructor(private echangesService: EchangesService) {}
 
   ngOnInit() {
-    // Charger les échanges en cours (données mock pour l'exemple)
-    this.exchanges = [
-      {
-        myItems: [
-          {
-            name: 'Objetkndslngsfdlkjfskdfkdsjfkj',
-            imageUrl: 'assets/images/products/s4.jpg',
-          },
-          {
-            name: 'Objet 2dsfsdfdsf',
-            imageUrl: 'assets/images/products/s5.jpg',
-          },
-          { name: 'Objet 2', imageUrl: 'assets/images/products/s5.jpg' },
-          { name: 'Objet 2', imageUrl: 'assets/images/products/s5.jpg' },
-          { name: 'Objet 2', imageUrl: 'assets/images/products/s5.jpg' },
-          { name: 'Objet 2', imageUrl: 'assets/images/products/s5.jpg' },
-          { name: 'Objet 2', imageUrl: 'assets/images/products/s5.jpg' },
-          { name: 'Objet 2', imageUrl: 'assets/images/products/s5.jpg' },
-        ],
-        otherPersonItems: [
-          { name: 'Objet A', imageUrl: 'assets/images/products/s7.jpg' },
-          { name: 'Objet B', imageUrl: 'assets/images/products/s11.jpg' },
-        ],
-        otherPerson: {
-          name: 'John Doe',
-          imageUrl: 'assets/images/profile/user-2.jpg',
-        },
-        acceptanceDate: new Date().toLocaleDateString(),
+    this.loadEchangesEnCours();
+  }
+
+  loadEchangesEnCours() {
+    this.echangesService.getEchangesEnCours().subscribe(
+      (data) => {
+        this.exchanges = data.data;
+        console.log('------------------');
+        console.log(this.exchanges);
       },
-      {
-        myItems: [
-          { name: 'Objet 3', imageUrl: 'assets/images/objets/objet3.png' },
-          { name: 'Objet 4', imageUrl: 'assets/images/objets/objet4.png' },
-        ],
-        otherPersonItems: [
-          { name: 'Objet C', imageUrl: 'assets/images/objets/objetC.png' },
-          { name: 'Objet D', imageUrl: 'assets/images/objets/objetD.png' },
-        ],
-        otherPerson: {
-          name: 'Jane Smith',
-          imageUrl: 'assets/images/users/jane-smith.png',
-        },
-        acceptanceDate: new Date().toLocaleDateString(),
-      },
-    ];
+      (error) => {
+        console.error(
+          'Erreur lors de la récupération des échanges en cours',
+          error
+        );
+      }
+    );
   }
 
   performAction(exchange: any) {

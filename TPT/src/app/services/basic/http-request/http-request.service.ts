@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, from, of } from 'rxjs';
-import { LocalStorageService } from 'src/app/services/basic/local-storage/local-storage.service';
+import { StorageService } from '../storage/storage.service';
 import { LocalStorageConst } from 'src/app/constants/local-storage.const';
 import { Network } from '@capacitor/network';
 import { switchMap } from 'rxjs/operators';
@@ -12,46 +12,54 @@ import { SnackBarService } from '../snack-bar/snack-bar.service';
 })
 export class HttpRequestService {
   private authorizationToken: string = '-';
+
   constructor(
     private http: HttpClient,
-    private localStorageService: LocalStorageService,
+    private storageService: StorageService,
     private snackBarService: SnackBarService
   ) {
     this.setAuthorizationTokenValue(null);
   }
 
-  protected setAuthorizationTokenValue(authorization: any): void {
+  protected async setAuthorizationTokenValue(
+    authorization: any
+  ): Promise<void> {
     if (authorization == 'USER') {
-      this.authorizationToken =
-        'Bearer ' +
-        this.localStorageService.getItem(LocalStorageConst.USER_ACCESS_TOKEN);
+      const token = await this.storageService.get(
+        LocalStorageConst.USER_ACCESS_TOKEN
+      );
+      this.authorizationToken = 'Bearer ' + token;
     }
   }
 
-  protected getOptions(authorization: any, options: any = {}): any {
-    this.setAuthorizationTokenValue(authorization);
-    let requestHeaders: HttpHeaders;
-    var allowHeaders = '*';
-    var contentType = 'application/json';
-    if (options.headers && options.headers instanceof HttpHeaders) {
-      requestHeaders = options.headers as HttpHeaders;
-      requestHeaders.append('Access-Control-Allow-Headers', allowHeaders);
-      requestHeaders.append('Content-Type', contentType);
-      requestHeaders.append('Accept', contentType);
-      requestHeaders.append('Authorization', this.authorizationToken);
-    } else {
-      requestHeaders = new HttpHeaders({
-        'Access-Control-Allow-Headers': allowHeaders,
-        'Content-Type': contentType,
-        Accept: contentType,
-        Authorization: this.authorizationToken,
-      });
-    }
-    if (!options.observe) {
-      options.observe = 'body';
-    }
-    options.headers = requestHeaders;
-    return options;
+  protected getOptions(authorization: any, options: any = {}): Promise<any> {
+    return this.setAuthorizationTokenValue(authorization).then(() => {
+      let requestHeaders: HttpHeaders;
+      const allowHeaders = '*';
+      const contentType = 'application/json';
+
+      if (options.headers && options.headers instanceof HttpHeaders) {
+        requestHeaders = options.headers as HttpHeaders;
+        requestHeaders = requestHeaders
+          .append('Access-Control-Allow-Headers', allowHeaders)
+          .append('Content-Type', contentType)
+          .append('Accept', contentType)
+          .append('Authorization', this.authorizationToken);
+      } else {
+        requestHeaders = new HttpHeaders({
+          'Access-Control-Allow-Headers': allowHeaders,
+          'Content-Type': contentType,
+          Accept: contentType,
+          Authorization: this.authorizationToken,
+        });
+      }
+
+      if (!options.observe) {
+        options.observe = 'body';
+      }
+      options.headers = requestHeaders;
+      return options;
+    });
   }
 
   public post<T>(
@@ -68,10 +76,10 @@ export class HttpRequestService {
           );
           return of(null);
         } else {
-          return this.http.post<T>(
-            url,
-            body,
-            this.getOptions(authorization, options)
+          return from(this.getOptions(authorization, options)).pipe(
+            switchMap((finalOptions) => {
+              return this.http.post<T>(url, body, finalOptions);
+            })
           );
         }
       })
@@ -91,7 +99,11 @@ export class HttpRequestService {
           );
           return of(null);
         } else {
-          return this.http.get<T>(url, this.getOptions(authorization, options));
+          return from(this.getOptions(authorization, options)).pipe(
+            switchMap((finalOptions) => {
+              return this.http.get<T>(url, finalOptions);
+            })
+          );
         }
       })
     );
@@ -111,10 +123,10 @@ export class HttpRequestService {
           );
           return of(null);
         } else {
-          return this.http.put<T>(
-            url,
-            body,
-            this.getOptions(authorization, options)
+          return from(this.getOptions(authorization, options)).pipe(
+            switchMap((finalOptions) => {
+              return this.http.put<T>(url, body, finalOptions);
+            })
           );
         }
       })
@@ -134,9 +146,10 @@ export class HttpRequestService {
           );
           return of(null);
         } else {
-          return this.http.delete<T>(
-            url,
-            this.getOptions(authorization, options)
+          return from(this.getOptions(authorization, options)).pipe(
+            switchMap((finalOptions) => {
+              return this.http.delete<T>(url, finalOptions);
+            })
           );
         }
       })
@@ -157,10 +170,10 @@ export class HttpRequestService {
           );
           return of(null);
         } else {
-          return this.http.patch<T>(
-            url,
-            body,
-            this.getOptions(authorization, options)
+          return from(this.getOptions(authorization, options)).pipe(
+            switchMap((finalOptions) => {
+              return this.http.patch<T>(url, body, finalOptions);
+            })
           );
         }
       })
@@ -180,9 +193,10 @@ export class HttpRequestService {
           );
           return of(null);
         } else {
-          return this.http.head<T>(
-            url,
-            this.getOptions(authorization, options)
+          return from(this.getOptions(authorization, options)).pipe(
+            switchMap((finalOptions) => {
+              return this.http.head<T>(url, finalOptions);
+            })
           );
         }
       })
@@ -202,9 +216,10 @@ export class HttpRequestService {
           );
           return of(null);
         } else {
-          return this.http.options<T>(
-            url,
-            this.getOptions(authorization, options)
+          return from(this.getOptions(authorization, options)).pipe(
+            switchMap((finalOptions) => {
+              return this.http.options<T>(url, finalOptions);
+            })
           );
         }
       })
