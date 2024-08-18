@@ -12,6 +12,8 @@ import {
   IonCardContent,
 } from '@ionic/angular/standalone';
 import { EchangesService } from 'src/app/services/echanges.service';
+import { ActionSheetController } from '@ionic/angular';
+
 @Component({
   selector: 'app-mes-echanges',
   templateUrl: './mes-echanges.component.html',
@@ -33,7 +35,10 @@ import { EchangesService } from 'src/app/services/echanges.service';
 export class MesEchangesComponent implements OnInit {
   public exchanges: any[] = [];
 
-  constructor(private echangesService: EchangesService) {}
+  constructor(
+    private echangesService: EchangesService,
+    private actionSheetController: ActionSheetController
+  ) {}
 
   ngOnInit() {
     this.loadEchangesEnCours();
@@ -43,8 +48,6 @@ export class MesEchangesComponent implements OnInit {
     this.echangesService.getEchangesEnCours().subscribe(
       (data) => {
         this.exchanges = data.data;
-        console.log('------------------');
-        console.log(this.exchanges);
       },
       (error) => {
         console.error(
@@ -55,8 +58,43 @@ export class MesEchangesComponent implements OnInit {
     );
   }
 
-  performAction(exchange: any) {
-    // Action à effectuer lors du clic sur le bouton
-    console.log('Action performed on exchange:', exchange);
+  async showActionSheet(exchange: any) {
+    const actionSheet = await this.actionSheetController.create({
+      header: "Gérer l'échange",
+      buttons: [
+        {
+          text: 'Voir les détails',
+          handler: () => {
+            console.log('Voir les détails clicked');
+            this.viewDetails(exchange);
+          },
+        },
+        {
+          text: "Effectuer l'échange",
+          handler: () => {
+            console.log("Effectuer l'échange clicked");
+            this.exchange(exchange);
+          },
+        },
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          },
+        },
+      ],
+    });
+    await actionSheet.present();
+  }
+
+  viewDetails(exchange: any) {
+    // Logique pour voir les détails de l'échange
+    console.log('Viewing details for exchange:', exchange);
+  }
+
+  exchange(exchange: any) {
+    // Logique pour refuser l'échange
+    console.log('Exchanging:', exchange);
   }
 }
