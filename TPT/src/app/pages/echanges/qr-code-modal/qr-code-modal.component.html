@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>QR Code</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Fermer</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <p style="text-align: center">Scannez ce QR code pour effectuer l'échange</p>
+  <div class="qr-code-container">
+    <img [src]="qrCodeUrl" alt="QR Code" class="qr-code-container-img" />
+  </div>
+</ion-content>
