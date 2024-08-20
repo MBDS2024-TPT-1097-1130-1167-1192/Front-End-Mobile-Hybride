@@ -41,30 +41,23 @@
           <div class="items-title">
             Mes objets ({{
               exchangeData.proposer
-                ? exchangeData.exchange.proposedGroupObject
-                    .objectGroupMemberships.length
-                : exchangeData.exchange.acceptedGroupObject
-                    .objectGroupMemberships.length
+                ? exchangeData.proposedObjects.length
+                : exchangeData.acceptedObjects.length
             }}) :
           </div>
           <div class="scrollable-container">
             <div
               *ngFor="
-                let membership of exchangeData.proposer
-                  ? exchangeData.exchange.proposedGroupObject
-                      .objectGroupMemberships
-                  : exchangeData.exchange.acceptedGroupObject
-                      .objectGroupMemberships
+                let object of exchangeData.proposer
+                  ? exchangeData.proposedObjects
+                  : exchangeData.acceptedObjects
               "
               class="item-container"
             >
               <ion-thumbnail class="item-thumbnail">
-                <img
-                  [src]="membership.object.imageUrl"
-                  alt="{{ membership.object.title }}"
-                />
+                <img [src]="object.imageUrl" alt="{{ object.title }}" />
               </ion-thumbnail>
-              <span>{{ membership.object.title }}</span>
+              <span>{{ object.title }}</span>
             </div>
           </div>
         </div>
@@ -83,30 +76,23 @@
             }}
             ({{
               exchangeData.proposer
-                ? exchangeData.exchange.acceptedGroupObject
-                    .objectGroupMemberships.length
-                : exchangeData.exchange.proposedGroupObject
-                    .objectGroupMemberships.length
+                ? exchangeData.acceptedObjects.length
+                : exchangeData.proposedObjects.length
             }}) :
           </div>
           <div class="scrollable-container">
             <div
               *ngFor="
-                let membership of exchangeData.proposer
-                  ? exchangeData.exchange.acceptedGroupObject
-                      .objectGroupMemberships
-                  : exchangeData.exchange.proposedGroupObject
-                      .objectGroupMemberships
+                let object of exchangeData.proposer
+                  ? exchangeData.acceptedObjects
+                  : exchangeData.proposedObjects
               "
               class="item-container"
             >
               <ion-thumbnail class="item-thumbnail">
-                <img
-                  [src]="membership.object.imageUrl"
-                  alt="{{ membership.object.title }}"
-                />
+                <img [src]="object.imageUrl" alt="{{ object.title }}" />
               </ion-thumbnail>
-              <span>{{ membership.object.title }}</span>
+              <span>{{ object.title }}</span>
             </div>
           </div>
         </div>
