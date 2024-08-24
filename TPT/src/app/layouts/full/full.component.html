@@ -3,16 +3,7 @@
     <ion-content>
       <ion-list id="inbox-list">
         <div class="logo-container">
-          <img
-            *ngIf="!darkMode"
-            src="assets/images/logos/logo-light.png"
-            alt="Light Mode Logo"
-          />
-          <img
-            *ngIf="darkMode"
-            src="assets/images/logos/logo-dark.png"
-            alt="Dark Mode Logo"
-          />
+          <img src="assets/images/logos/logo-light.png" alt="Light Mode Logo" />
         </div>
         <ion-menu-toggle
           auto-hide="false"
@@ -35,21 +26,6 @@
           </ion-item>
         </ion-menu-toggle>
       </ion-list>
-
-      <ion-item lines="none">
-        <ion-icon
-          aria-hidden="true"
-          slot="start"
-          ios="moon-outline"
-          md="moon-sharp"
-        ></ion-icon>
-        <ion-label>Dark Mode</ion-label>
-        <ion-toggle
-          slot="end"
-          [checked]="darkMode"
-          (ionChange)="toggleDarkMode($event)"
-        ></ion-toggle>
-      </ion-item>
     </ion-content>
   </ion-menu>
   <ion-content id="main-content" [fullscreen]="true">
