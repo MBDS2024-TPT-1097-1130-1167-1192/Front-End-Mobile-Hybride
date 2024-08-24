@@ -3,7 +3,16 @@
     <ion-content>
       <ion-list id="inbox-list">
         <div class="logo-container">
-          <img src="assets/images/logos/logo-light.png" alt="Light Mode Logo" />
+          <img
+            *ngIf="!darkMode"
+            src="assets/images/logos/logo-light.png"
+            alt="Light Mode Logo"
+          />
+          <img
+            *ngIf="darkMode"
+            src="assets/images/logos/logo-dark.png"
+            alt="Dark Mode Logo"
+          />
         </div>
         <ion-menu-toggle
           auto-hide="false"

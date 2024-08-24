@@ -76,6 +76,8 @@ export class FullComponent implements OnInit, AfterViewInit {
   ];
   @ViewChild(IonHeader, { read: ElementRef }) header: ElementRef | undefined;
   public headerHeight = 0;
+  public darkMode = false;
+
   constructor() {
     addIcons({
       swapHorizontalOutline,
@@ -84,7 +86,10 @@ export class FullComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.body.classList.toggle('dark', this.darkMode);
+  }
 
   ngAfterViewInit() {
     if (this.header) {
