@@ -2,8 +2,8 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'io.ionic.starter',
-  appName: 'TPT',
-  webDir: 'www'
+  appName: 'Trocodeal',
+  webDir: 'www',
 };
 
 export default config;

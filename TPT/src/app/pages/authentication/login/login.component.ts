@@ -71,9 +71,9 @@ export class LoginComponent implements OnInit {
             'Vous êtes maintenant connecté.'
           );
         },
-        error: () => {
+        error: (err) => {
           this.snackBarService.openErrorSnackBar(
-            'Votre email ou votre mot de passe est incorrect.'
+            err.url + ' ' + err.error.message + ' ' + err.status
           );
         },
         complete: () => {},

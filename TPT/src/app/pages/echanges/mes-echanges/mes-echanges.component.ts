@@ -17,6 +17,11 @@ import { EchangesService } from 'src/app/services/echanges.service';
 import { ActionSheetController } from '@ionic/angular';
 import { QrCodeModalComponent } from '../qr-code-modal/qr-code-modal.component';
 import { ModalController } from '@ionic/angular';
+import {
+  CapacitorBarcodeScanner,
+  CapacitorBarcodeScannerOptions,
+  CapacitorBarcodeScannerTypeHintALLOption,
+} from '@capacitor/barcode-scanner';
 
 @Component({
   selector: 'app-mes-echanges',
@@ -40,6 +45,11 @@ import { ModalController } from '@ionic/angular';
 })
 export class MesEchangesComponent implements OnInit {
   public exchanges: any[] = [];
+  public barcodeResult!: string;
+  private barcodeOptions: CapacitorBarcodeScannerOptions = {
+    scanButton: true,
+    hint: CapacitorBarcodeScannerTypeHintALLOption.ALL,
+  };
 
   constructor(
     private echangesService: EchangesService,
@@ -108,7 +118,7 @@ export class MesEchangesComponent implements OnInit {
 
   async exchange(exchange: any) {
     if (exchange.proposer == 'true') {
-      console.log('Exchange action for accepter:', exchange);
+      this.scanBarcode();
     } else {
       console.log('qrCodeUrl : ', exchange.qrCodeUrl);
       const modal = await this.modalController.create({
@@ -122,5 +132,12 @@ export class MesEchangesComponent implements OnInit {
       });
       await modal.present();
     }
+  }
+
+  public async scanBarcode(): Promise<void> {
+    this.barcodeResult = (
+      await CapacitorBarcodeScanner.scanBarcode(this.barcodeOptions)
+    ).ScanResult;
+    console.log('Barcode data:', this.barcodeResult);
   }
 }
