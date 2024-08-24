@@ -86,7 +86,6 @@ export class MesEchangesComponent implements OnInit {
         {
           text: "Effectuer l'échange",
           handler: () => {
-            console.log("Effectuer l'échange clicked");
             this.exchange(exchange);
           },
         },
@@ -108,20 +107,20 @@ export class MesEchangesComponent implements OnInit {
   }*/
 
   async exchange(exchange: any) {
-    if (exchange.proposer) {
+    if (exchange.proposer == 'true') {
+      console.log('Exchange action for accepter:', exchange);
+    } else {
+      console.log('qrCodeUrl : ', exchange.qrCodeUrl);
       const modal = await this.modalController.create({
         component: QrCodeModalComponent,
         componentProps: {
-          qrCodeUrl:
-            'https://upload.wikimedia.org/wikipedia/commons/7/78/Qrcode_wikipedia_fr_v2clean.png',
+          qrCodeUrl: exchange.qrCodeUrl,
         },
       });
       modal.onDidDismiss().then(() => {
         this.loadEchangesEnCours();
       });
       await modal.present();
-    } else {
-      console.log('Exchange action for accepter:', exchange);
     }
   }
 }
