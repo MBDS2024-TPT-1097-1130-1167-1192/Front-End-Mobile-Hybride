@@ -12,18 +12,9 @@ import { DataWsConst } from '../constants/data-ws.const';
 })
 export class AuthService {
   constructor(
-    private httpRequestService: HttpRequestService,
     private storageService: StorageService,
     private jwtHelper: JwtHelperService
   ) {}
-
-  public login(user: any): Observable<any> {
-    return this.httpRequestService.post(
-      null,
-      EnvironmentConst.API_URL + DataWsConst.WS_LOGIN,
-      user
-    );
-  }
 
   getToken(): Observable<string | null> {
     return from(this.storageService.get(LocalStorageConst.USER_ACCESS_TOKEN));

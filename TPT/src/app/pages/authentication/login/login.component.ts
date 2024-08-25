@@ -2,13 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { eyeOff, eye } from 'ionicons/icons';
-import { AuthService } from 'src/app/services/auth.service';
-import { LocalStorageService } from 'src/app/services/basic/local-storage/local-storage.service';
 import { LocalStorageConst } from 'src/app/constants/local-storage.const';
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/services/basic/storage/storage.service';
 import { SnackBarService } from 'src/app/services/basic/snack-bar/snack-bar.service';
 import { DataRoutingConst } from 'src/app/constants/data-routing.const';
+import { HttpRequestService } from 'src/app/services/basic/http-request/http-request.service';
+import { EnvironmentConst } from 'src/app/constants/data-env.const';
+import { DataWsConst } from 'src/app/constants/data-ws.const';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -21,11 +23,10 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
-    private localStorageService: LocalStorageService,
     private storageService: StorageService,
     private router: Router,
-    private snackBarService: SnackBarService
+    private snackBarService: SnackBarService,
+    private httpRequestService: HttpRequestService
   ) {
     addIcons({
       eye,
@@ -58,26 +59,37 @@ export class LoginComponent implements OnInit {
         password: this.loginForm.value.password,
       };
 
-      this.authService.login(userData).subscribe({
-        next: async (res) => {
-          await this.storageService.set(
-            LocalStorageConst.USER_ACCESS_TOKEN,
-            res.data.user_access_token
-          );
-          this.router.navigate([DataRoutingConst.ROUTE_MES_ECHANGES], {
-            replaceUrl: true,
-          });
-          this.snackBarService.openSuccesSnackBar(
-            'Vous êtes maintenant connecté.'
-          );
-        },
-        error: (err) => {
-          this.snackBarService.openErrorSnackBar(
-            err.url + ' ' + err.error.message + ' ' + err.status
-          );
-        },
-        complete: () => {},
-      });
+      this.httpRequestService
+        .post(null, EnvironmentConst.API_URL + DataWsConst.WS_LOGIN, userData)
+        .subscribe({
+          next: (res) => {
+            this.storageService
+              .set(
+                LocalStorageConst.USER_ACCESS_TOKEN,
+                res.data.user_access_token
+              )
+              .then(() => {
+                this.router.navigate([DataRoutingConst.ROUTE_MES_ECHANGES], {
+                  replaceUrl: true,
+                });
+                this.snackBarService.openSuccesSnackBar(
+                  'Vous êtes maintenant connecté.'
+                );
+              });
+          },
+          error: (err) => {
+            if (err.status == 401) {
+              this.snackBarService.openErrorSnackBar(
+                'Email ou mot de passe incorrect. Veuillez réessayer.'
+              );
+            } else {
+              this.snackBarService.openErrorSnackBar(
+                err.url + ' ' + err.error.message + ' ' + err.status
+              );
+            }
+          },
+          complete: () => {},
+        });
     } else {
       this.displayFormErrors();
     }
