@@ -33,9 +33,13 @@ import {
   swapHorizontalOutline,
   swapHorizontalSharp,
   moonSharp,
+  logOutOutline,
+  logOutSharp,
 } from 'ionicons/icons';
 import { DataRoutingConst } from 'src/app/constants/data-routing.const';
-
+import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
+import { SnackBarService } from 'src/app/services/basic/snack-bar/snack-bar.service';
 @Component({
   selector: 'app-full',
   templateUrl: './full.component.html',
@@ -78,11 +82,17 @@ export class FullComponent implements OnInit, AfterViewInit {
   public headerHeight = 0;
   public darkMode = false;
 
-  constructor() {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private snackBarService: SnackBarService
+  ) {
     addIcons({
       swapHorizontalOutline,
       swapHorizontalSharp,
       moonSharp,
+      logOutOutline,
+      logOutSharp,
     });
   }
 
@@ -95,5 +105,13 @@ export class FullComponent implements OnInit, AfterViewInit {
     if (this.header) {
       this.headerHeight = this.header.nativeElement.offsetHeight;
     }
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate([DataRoutingConst.ROUTE_LOGIN], {
+      replaceUrl: true,
+    });
+    this.snackBarService.openSuccesSnackBar('Vous êtes maintenant déconnecté.');
   }
 }
