@@ -104,16 +104,16 @@ export class HttpRequestService {
     body: any,
     options: any = {}
   ): Observable<any> {
-    if (url === this.loginUrl) {
-      return this.http.post<T>(url, body, options);
-    } else {
-      return from(Network.getStatus()).pipe(
-        switchMap((status) => {
-          if (!status.connected) {
-            this.snackBarService.openErrorSnackBar(
-              'Aucune connexion Internet. Veuillez vérifier votre connexion et réessayer.'
-            );
-            return of(null);
+    return from(Network.getStatus()).pipe(
+      switchMap((status) => {
+        if (!status.connected) {
+          this.snackBarService.openErrorSnackBar(
+            'Aucune connexion Internet. Veuillez vérifier votre connexion et réessayer.'
+          );
+          return of(null);
+        } else {
+          if (url === this.loginUrl) {
+            return this.http.post<T>(url, body, options);
           } else {
             return this.getOptions(authorization, options).pipe(
               switchMap((finalOptions) => {
@@ -124,9 +124,9 @@ export class HttpRequestService {
               })
             );
           }
-        })
-      );
-    }
+        }
+      })
+    );
   }
 
   public get<T>(
