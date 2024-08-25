@@ -6,9 +6,6 @@
   <h1 style="margin-left: 20px">
     Mes échanges en cours ({{ exchanges.length }})
   </h1>
-  <h2 style="margin-left: 20px">
-    Barcode data: {{ barcodeResult ? barcodeResult : "No data found" }}
-  </h2>
   <ion-list>
     <ion-card *ngFor="let exchangeData of exchanges" class="ion-card">
       <ion-card-header>

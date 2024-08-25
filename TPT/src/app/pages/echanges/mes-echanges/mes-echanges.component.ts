@@ -22,7 +22,11 @@ import {
   CapacitorBarcodeScannerOptions,
   CapacitorBarcodeScannerTypeHintALLOption,
 } from '@capacitor/barcode-scanner';
-
+import { HttpRequestService } from 'src/app/services/basic/http-request/http-request.service';
+import { EnvironmentConst } from 'src/app/constants/data-env.const';
+import { DataWsConst } from 'src/app/constants/data-ws.const';
+import { SnackBarService } from 'src/app/services/basic/snack-bar/snack-bar.service';
+import { lastValueFrom } from 'rxjs';
 @Component({
   selector: 'app-mes-echanges',
   templateUrl: './mes-echanges.component.html',
@@ -54,7 +58,9 @@ export class MesEchangesComponent implements OnInit {
   constructor(
     private echangesService: EchangesService,
     private actionSheetController: ActionSheetController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private httpRequestService: HttpRequestService,
+    private snackBarService: SnackBarService
   ) {}
 
   ngOnInit() {
@@ -67,9 +73,9 @@ export class MesEchangesComponent implements OnInit {
         this.exchanges = data.data;
       },
       (error) => {
-        console.error(
-          'Erreur lors de la récupération des échanges en cours',
-          error
+        this.snackBarService.openErrorSnackBar(
+          'Erreur lors de la récupération des échanges en cours : ' +
+            error.message
         );
       }
     );
@@ -86,13 +92,6 @@ export class MesEchangesComponent implements OnInit {
     const actionSheet = await this.actionSheetController.create({
       header: "Gérer l'échange",
       buttons: [
-        /*{
-          text: 'Voir les détails',
-          handler: () => {
-            console.log('Voir les détails clicked');
-            this.viewDetails(exchange);
-          },
-        },*/
         {
           text: "Effectuer l'échange",
           handler: () => {
@@ -102,24 +101,15 @@ export class MesEchangesComponent implements OnInit {
         {
           text: 'Annuler',
           role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          },
+          handler: () => {},
         },
       ],
     });
     await actionSheet.present();
   }
 
-  /*viewDetails(exchange: any) {
-    // Logique pour voir les détails de l'échange
-    console.log('Viewing details for exchange:', exchange);
-  }*/
-
   async exchange(exchange: any) {
-    if (exchange.proposer == 'true') {
-      this.scanBarcode();
-    } else {
+    if (!exchange.proposer) {
       console.log('qrCodeUrl : ', exchange.qrCodeUrl);
       const modal = await this.modalController.create({
         component: QrCodeModalComponent,
@@ -131,13 +121,43 @@ export class MesEchangesComponent implements OnInit {
         this.loadEchangesEnCours();
       });
       await modal.present();
+    } else {
+      await this.scanBarcode(exchange);
     }
   }
 
-  public async scanBarcode(): Promise<void> {
-    this.barcodeResult = (
-      await CapacitorBarcodeScanner.scanBarcode(this.barcodeOptions)
-    ).ScanResult;
-    console.log('Barcode data:', this.barcodeResult);
+  public async scanBarcode(exchange: any): Promise<void> {
+    try {
+      this.barcodeResult = (
+        await CapacitorBarcodeScanner.scanBarcode(this.barcodeOptions)
+      ).ScanResult;
+
+      if (this.barcodeResult === exchange.qrCodeData) {
+        const url =
+          `${EnvironmentConst.API_URL}${DataWsConst.WS_POST_QR_CODE_SCAN_ECHANGE}` +
+          `?qrCodeData=${this.barcodeResult}&scannerId=${exchange.exchange.proposer.id}&scannedUserId=${exchange.exchange.accepter.id}`;
+
+        await lastValueFrom(this.httpRequestService.post('USER', url, {}))
+          .then((response) => {
+            this.snackBarService.openSuccesSnackBar(
+              'Échange effectué avec succès.'
+            );
+            this.loadEchangesEnCours();
+          })
+          .catch((error) => {
+            this.snackBarService.openErrorSnackBar(
+              'Erreur lors de la validation du QR code : ' + error.message
+            );
+          });
+      } else {
+        this.snackBarService.openErrorSnackBar(
+          'Erreur lors de la validation du QR code.'
+        );
+      }
+    } catch (error) {
+      this.snackBarService.openErrorSnackBar(
+        'Erreur lors du scan du QR code : ' + error
+      );
+    }
   }
 }
