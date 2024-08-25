@@ -35,8 +35,18 @@
           </ion-item>
         </ion-menu-toggle>
       </ion-list>
+      <ion-item (click)="logout()" lines="none">
+        <ion-icon
+          aria-hidden="true"
+          slot="start"
+          ios="log-out-outline"
+          md="log-out-sharp"
+        ></ion-icon>
+        <ion-label>Se déconnecter</ion-label>
+      </ion-item>
     </ion-content>
   </ion-menu>
+
   <ion-content id="main-content" [fullscreen]="true">
     <ion-header slot="fixed" [translucent]="true">
       <ion-toolbar>
