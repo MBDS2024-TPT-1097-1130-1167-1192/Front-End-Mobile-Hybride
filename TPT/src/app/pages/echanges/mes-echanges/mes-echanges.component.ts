@@ -27,6 +27,8 @@ import { EnvironmentConst } from 'src/app/constants/data-env.const';
 import { DataWsConst } from 'src/app/constants/data-ws.const';
 import { SnackBarService } from 'src/app/services/basic/snack-bar/snack-bar.service';
 import { lastValueFrom } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
+
 @Component({
   selector: 'app-mes-echanges',
   templateUrl: './mes-echanges.component.html',
@@ -60,7 +62,8 @@ export class MesEchangesComponent implements OnInit {
     private actionSheetController: ActionSheetController,
     private modalController: ModalController,
     private httpRequestService: HttpRequestService,
-    private snackBarService: SnackBarService
+    private snackBarService: SnackBarService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -71,6 +74,7 @@ export class MesEchangesComponent implements OnInit {
     this.echangesService.getEchangesEnCours().subscribe(
       (data) => {
         this.exchanges = data.data;
+        this.cdr.detectChanges();
       },
       (error) => {
         this.snackBarService.openErrorSnackBar(
