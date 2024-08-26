@@ -31,7 +31,7 @@ export class EchangesService {
         } else {
           const url = `${
             EnvironmentConst.API_URL + DataWsConst.WS_GET_MES_ECHANGES
-          }/my?status=accepted`;
+          }/my?status=planified`;
           return this.httpRequestService.get('USER', url).pipe(
             switchMap((data) => {
               return from(this.storageService.set(this.STORAGE_KEY, data)).pipe(
